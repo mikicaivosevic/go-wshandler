@@ -11,6 +11,8 @@ var upgrader websocket.Upgrader
 var clients = make(map[*Client]bool)
 var lock = sync.RWMutex{}
 
+const DEFAULT_ROOM  = "wshandler-room"
+
 type Client struct {
 	Conn *websocket.Conn
 	Room string
@@ -21,7 +23,7 @@ type Client struct {
 func (client *Client) Add() {
 	lock.Lock()
 	defer lock.Unlock()
-	clients[client]=true
+	clients[client] = true
 }
 
 func (client *Client) Remove() {
@@ -34,26 +36,26 @@ func (client *Client) JoinRoom(room string) {
 	client.Room = room
 }
 
-func (client *Client) Send(msg []byte, room interface{}, broadcast interface{}) {
+func (client *Client) Send(msg []byte, room interface{}) {
 	lock.RLock()
 	defer lock.RUnlock()
-	if broadcast == true {
-		for c := range clients {
+	if room == nil {
+		room = DEFAULT_ROOM
+	}
+	for c := range clients {
+		if c.Room == room {
 			c.Conn.WriteMessage(websocket.TextMessage, msg)
 		}
 	}
-	if broadcast == false {
-		client.Conn.WriteMessage(websocket.TextMessage, msg)
-	}
 
-	if broadcast == nil {
-		for c := range clients {
-			if c.Room == room {
-				c.Conn.WriteMessage(websocket.TextMessage, msg)
-			}
-		}
-	}
+}
 
+func Broadcast(msg []byte) {
+	lock.RLock()
+	defer lock.RUnlock()
+	for c := range clients {
+		c.Conn.WriteMessage(websocket.TextMessage, msg)
+	}
 }
 
 
@@ -67,7 +69,7 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request, OnEvent *WebSocket
 
 	room := r.URL.Query().Get("room")
 	if room == "" {
-		room = "wshandler-room"
+		room = DEFAULT_ROOM
 	}
 	client := Client{
 		Conn: conn,
@@ -90,8 +92,8 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request, OnEvent *WebSocket
 }
 
 type WebSocketEvent struct {
-	OnDisconnect func(c *Client)
-	OnConnect func(c *Client)
+	OnDisconnect  func(c *Client)
+	OnConnect     func(c *Client)
 	OnTextMessage func(c *Client, msg []byte)
 }
 

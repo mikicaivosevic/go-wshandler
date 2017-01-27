@@ -2,18 +2,16 @@
 Simple Go WebSockets Handler
 
 
-####When a message is sent with the broadcast argument true, all clients connected to the namespace receive it, including the sender.
+####When a message is sent with the Broadcast method, all clients connected to the namespace receive it, including the sender.
 
-    Send(msg []byte, room interface{}, broadcast interface{})
-
-    client.Send(msg, nil, true)
+    Broadcast(msg []byte)
 
 
-#### The Send() function accept room argument that cause the message to be sent to all the clients that are in the given room if broadcast argument is nil.
+#### The Send() function accept room argument that cause the message to be sent to all the clients that are in the given room.
 
-    Send(msg []byte, room interface{}, broadcast interface{})
+    Send(msg []byte, room interface{})
 
-    client.Send(msg, "uuid-room", nil)
+    client.Send(msg, "uuid-room")
 
 
 
@@ -41,7 +39,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("Disconnected!!!")
 		},
 		OnTextMessage: func(client *wshandler.Client, msg []byte) {
-			client.Send(msg, nil, true)
+			wshandler.Broadcast(msg)
 			fmt.Println("Message: " + string(msg))
 		},
 	})
