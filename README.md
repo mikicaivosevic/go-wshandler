@@ -2,14 +2,14 @@
 Simple Go WebSockets Handler
 
 
-####When a message is sent with the broadcast option enabled, all clients connected to the namespace receive it, including the sender.
+####When a message is sent with the broadcast argument true, all clients connected to the namespace receive it, including the sender.
 
     Send(msg []byte, room interface{}, broadcast interface{})
 
     client.Send(msg, "room", true)
 
 
-#### The Send() function accept room argument that cause the message to be sent to all the clients that are in the given room.
+#### The Send() function accept room argument that cause the message to be sent to all the clients that are in the given room if broadcast argument is nil.
 
     Send(msg []byte, room interface{}, broadcast interface{})
 
