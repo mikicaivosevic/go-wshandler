@@ -32,14 +32,13 @@ func (client *Client) Remove() {
 	lock.Lock()
 	defer lock.Unlock()
 	delete(clients, client)
-	delete(rooms, client)
 }
 
 func (client *Client) JoinRoom(room string) {
 	lock.Lock()
 	defer lock.Unlock()
 	client.Room = room
-	append(rooms[room], client)
+	rooms[room] = append(rooms[room], client)
 }
 
 func (client *Client) LeaveRoom(room string) {
