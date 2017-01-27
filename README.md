@@ -4,33 +4,15 @@ Simple Go WebSockets Handler
 
 Example:
 
-```
+golang```
 package main
 
 import (
 	"net/http"
-	"os"
 	"fmt"
-	"io/ioutil"
 	"github.com/mikicaivosevic/go-wshandler"
 	"github.com/gorilla/mux"
 )
-
-
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-
-	indexFile, err := os.Open("index.html")
-	if err != nil {
-		fmt.Println(err)
-	}
-	index, err := ioutil.ReadAll(indexFile)
-	if err != nil {
-		fmt.Println(err)
-	}
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, string(index))
-}
-
 
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +37,6 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/ws", wsHandler)
-	r.HandleFunc("/", indexHandler)
 	http.ListenAndServe(":3000", r)
 }
 
