@@ -10,6 +10,7 @@ import (
 var upgrader websocket.Upgrader
 var clients = make(map[*Client]bool)
 var lock = sync.RWMutex{}
+var rooms = make(map[string][]*Client)
 
 const DEFAULT_ROOM  = "wshandler-room"
 
@@ -30,21 +31,35 @@ func (client *Client) Remove() {
 	lock.Lock()
 	defer lock.Unlock()
 	delete(clients, client)
+	delete(rooms, client)
 }
 
 func (client *Client) JoinRoom(room string) {
+	lock.Lock()
+	defer lock.Unlock()
 	client.Room = room
+	append(rooms[room], client)
+}
+
+func (client *Client) QuitRoom(room string) {
+	lock.Lock()
+	defer lock.Unlock()
+	delete(rooms, client)
 }
 
 func (client *Client) Send(msg []byte, room interface{}) {
 	lock.RLock()
 	defer lock.RUnlock()
+
 	if room == nil {
 		room = DEFAULT_ROOM
 	}
-	for c := range clients {
-		if c.Room == room {
-			c.Conn.WriteMessage(websocket.TextMessage, msg)
+
+	for roomName, cl := range rooms {
+		for _, roomClient := range cl {
+			if room == roomName {
+				roomClient.Conn.WriteMessage(websocket.TextMessage, msg)
+			}
 		}
 	}
 
