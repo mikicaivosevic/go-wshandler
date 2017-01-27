@@ -6,7 +6,7 @@ Simple Go WebSockets Handler
 
     Send(msg []byte, room interface{}, broadcast interface{})
 
-    client.Send(msg, "room", true)
+    client.Send(msg, nil, true)
 
 
 #### The Send() function accept room argument that cause the message to be sent to all the clients that are in the given room if broadcast argument is nil.
