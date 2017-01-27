@@ -77,10 +77,12 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request, OnEvent *WebSocket
 	}
 
 	OnEvent.OnConnect(&client)
+	client.Add()
 	for {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
 			OnEvent.OnDisconnect(&client)
+			client.Remove()
 			return
 		}
 		OnEvent.OnTextMessage(&client, msg)
