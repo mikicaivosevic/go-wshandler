@@ -4,7 +4,7 @@ Simple Go WebSockets Handler
 
 Example:
 
-go`
+go```
 package main
 
 import (
@@ -59,4 +59,5 @@ func main() {
 	http.ListenAndServe(":3000", r)
 }
 
+```
 `
