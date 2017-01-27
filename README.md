@@ -34,11 +34,9 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 
 	wshandler.WebSocketHandler(w, r, &wshandler.WebSocketEvent{
 		OnConnect: func(client *wshandler.Client) {
-			client.Add()
 			fmt.Println("Connected!!!")
 		},
 		OnDisconnect: func(client *wshandler.Client) {
-			client.Remove()
 			fmt.Println(client.Room)
 			fmt.Println("Disconnected!!!")
 		},
