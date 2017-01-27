@@ -4,7 +4,7 @@ Simple Go WebSockets Handler
 
 Example:
 
-golang```
+```
 package main
 
 import (
