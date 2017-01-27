@@ -19,6 +19,7 @@ type Client struct {
 	Room string
 	Req  *http.Request
 	Res  *http.ResponseWriter
+	ID string
 }
 
 func (client *Client) Add() {
@@ -41,7 +42,7 @@ func (client *Client) JoinRoom(room string) {
 	append(rooms[room], client)
 }
 
-func (client *Client) QuitRoom(room string) {
+func (client *Client) LeaveRoom(room string) {
 	lock.Lock()
 	defer lock.Unlock()
 	delete(rooms, client)
