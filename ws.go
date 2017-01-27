@@ -45,7 +45,7 @@ func (client *Client) JoinRoom(room string) {
 func (client *Client) LeaveRoom(room string) {
 	lock.Lock()
 	defer lock.Unlock()
-	delete(rooms, client)
+	delete(rooms, room)
 }
 
 func (client *Client) Send(msg []byte, room interface{}) {
