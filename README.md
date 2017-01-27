@@ -2,6 +2,16 @@
 Simple Go WebSockets Handler
 
 
+####When a message is sent with the broadcast option enabled, all clients connected to the namespace receive it, including the sender.
+
+    Send(msg []byte, room interface{}, broadcast interface{})
+
+    client.Send(msg, "room", true)
+
+
+
+
+
 Example:
 
 ```
