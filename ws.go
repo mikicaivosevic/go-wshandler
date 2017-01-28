@@ -18,7 +18,8 @@ type Client struct {
 	Room string
 	Req  *http.Request
 	Res  *http.ResponseWriter
-	ID string
+	ID    string
+	mu    sync.Mutex
 }
 
 func (client *Client) Add() {
@@ -42,6 +43,8 @@ func (client *Client) Send(msg []byte, room interface{}) {
 	}
 	for c := range clients {
 		if c.Room == room {
+			c.mu.Lock()
+			defer c.mu.Unlock()
 			c.Conn.WriteMessage(websocket.TextMessage, msg)
 		}
 	}
@@ -52,6 +55,8 @@ func Broadcast(msg []byte) {
 	lock.RLock()
 	defer lock.RUnlock()
 	for c := range clients {
+		c.mu.Lock()
+		defer c.mu.Unlock()
 		c.Conn.WriteMessage(websocket.TextMessage, msg)
 	}
 }
