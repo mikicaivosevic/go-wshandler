@@ -61,6 +61,10 @@ func Broadcast(msg []byte) {
 	}
 }
 
+func SetWebSocketUpgrader(u websocket.Upgrader) {
+	upgrader = u
+}
+
 
 func WebSocketHandler(w http.ResponseWriter, r *http.Request, OnEvent *WebSocketEvent) {
 	conn, err := upgrader.Upgrade(w, r, nil)
