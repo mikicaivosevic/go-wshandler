@@ -25,17 +25,18 @@ import (
 	"fmt"
 	"github.com/mikicaivosevic/go-wshandler"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 )
 
 
-    func wsHandler(w http.ResponseWriter, r *http.Request) {
-        //Set websocket upgrader, allow cross domain requests
-        wshandler.SetWebSocketUpgrader(websocket.Upgrader{
-        CheckOrigin: func(r *http.Request) bool {
-                        return true
-                },
-    })
-    
+func wsHandler(w http.ResponseWriter, r *http.Request) {
+	//Set websocket upgrader, allow cross domain requests
+	wshandler.SetWebSocketUpgrader(websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	})
+
 	wshandler.WebSocketHandler(w, r, &wshandler.WebSocketEvent{
 		OnConnect: func(client *wshandler.Client) {
 			fmt.Println("Connected!!!")
